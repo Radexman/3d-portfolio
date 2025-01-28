@@ -17,9 +17,11 @@ gui.addColor(parameters, 'materialColor').onChange(() => {
 });
 
 // Texture
-const texuteLoader = new THREE.TextureLoader();
-const gradientTexture = texuteLoader.load('./textures/gradients/3.jpg');
+const textureLoader = new THREE.TextureLoader();
+const gradientTexture = textureLoader.load('./textures/gradients/3.jpg');
 gradientTexture.magFilter = THREE.NearestFilter;
+
+const particleTexture = textureLoader.load('./textures/gradients/9.png');
 
 /**
  * Base
@@ -36,6 +38,7 @@ const scene = new THREE.Scene();
 const toonMaterial = new THREE.MeshToonMaterial({
 	color: parameters.materialColor,
 	gradientMap: gradientTexture,
+	wireframe: true,
 });
 
 // Meshes
@@ -53,13 +56,17 @@ const meshThree = new THREE.Mesh(new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16)
 meshThree.position.y = -objectsDistance * 2;
 meshThree.position.x = 2;
 
-const sectionMeshes = [meshOne, meshTwo, meshThree];
-scene.add(meshOne, meshTwo, meshThree);
+const meshFour = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), toonMaterial);
+meshFour.position.y = -objectsDistance * 3;
+meshFour.position.x = -2;
+
+const sectionMeshes = [meshOne, meshTwo, meshThree, meshFour];
+scene.add(meshOne, meshTwo, meshThree, meshFour);
 
 // Particles
 
 // Geometry
-const particlesCount = 200;
+const particlesCount = 300;
 const positions = new Float32Array(particlesCount * 3);
 
 for (let i = 0; i < particlesCount; i++) {
@@ -76,7 +83,10 @@ particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 
 const particlesMaterial = new THREE.PointsMaterial({
 	color: parameters.materialColor,
 	sizeAttenuation: true,
-	size: 0.03,
+	size: 0.3,
+	transparent: true,
+	alphaMap: particleTexture,
+	depthTest: false,
 });
 
 // Points
@@ -148,9 +158,7 @@ window.addEventListener('scroll', () => {
 		gsap.to(sectionMeshes[currentSection].rotation, {
 			duration: 2,
 			ease: 'power2.inOut',
-			x: '+=6',
 			y: '+=3',
-			z: '+=1.5',
 		});
 	}
 });
