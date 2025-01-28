@@ -63,6 +63,16 @@ meshFour.position.x = -2;
 const sectionMeshes = [meshOne, meshTwo, meshThree, meshFour];
 scene.add(meshOne, meshTwo, meshThree, meshFour);
 
+// Particle background plane
+const particlePlane = new THREE.PlaneGeometry(12, objectsDistance * 7, 60, 60);
+const particlesPlaneMaterial = new THREE.PointsMaterial({
+	size: 0.01,
+	sizeAttenuation: true,
+});
+
+const particleBackground = new THREE.Points(particlePlane, particlesPlaneMaterial);
+scene.add(particleBackground);
+
 // Particles
 
 // Geometry
@@ -83,7 +93,7 @@ particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 
 const particlesMaterial = new THREE.PointsMaterial({
 	color: parameters.materialColor,
 	sizeAttenuation: true,
-	size: 0.3,
+	size: 0.2,
 	transparent: true,
 	alphaMap: particleTexture,
 	depthTest: false,
